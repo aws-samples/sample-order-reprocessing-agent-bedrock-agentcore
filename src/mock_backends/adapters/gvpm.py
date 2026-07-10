@@ -43,7 +43,7 @@ def provision(request: dict[str, Any]) -> ProvisionResponse:
     per component-methods.md, this is GVPM's `resubmit_order_item`."""
     subscription_id = request.get("subscription_id", "")
 
-    if random.random() < _SIMULATED_BACKEND_ERROR_RATE:
+    if random.random() < _SIMULATED_BACKEND_ERROR_RATE:  # nosec B311 -- simulated transient failure, not crypto
         return structured_error("BACKEND_ERROR", "GVPM service temporarily unavailable (simulated)")
 
     reference_id = str(uuid.uuid4())

@@ -16,7 +16,7 @@ _MOCK_DB: dict[str, str] = {}
 
 
 def _generate_msisdn() -> str:
-    return "9198" + "".join(str(random.randint(0, 9)) for _ in range(8))
+    return "9198" + "".join(str(random.randint(0, 9)) for _ in range(8))  # nosec B311 -- fake mock backend data, not crypto
 
 
 def lookup(key: str) -> LookupResponse:

@@ -29,21 +29,21 @@ def _generate_random_request() -> PlaceOrderRequest:
     an independent customer's order — uses the same place_order() code path
     as a real UI-triggered order, no special-casing."""
     customer_id = f"CUST-AMBIENT-{uuid.uuid4().hex[:6].upper()}"
-    order_category = random.choice(_ORDER_CATEGORIES)
+    order_category = random.choice(_ORDER_CATEGORIES)  # nosec B311 -- fake simulated order data, not crypto
 
     device_selection = None
     if order_category != "Add Subscription":
-        device_model, device_category = random.choice(_DEVICE_MODELS)
+        device_model, device_category = random.choice(_DEVICE_MODELS)  # nosec B311 -- fake simulated order data, not crypto
         device_selection = DeviceSelection(
             device_model=device_model, device_category=device_category,
-            financing_type=random.choice(_FINANCING_TYPES),
+            financing_type=random.choice(_FINANCING_TYPES),  # nosec B311 -- fake simulated order data, not crypto
         )
 
-    vas_selections = random.sample(_VAS_TYPES, k=random.randint(0, 2))
+    vas_selections = random.sample(_VAS_TYPES, k=random.randint(0, 2))  # nosec B311 -- fake simulated order data, not crypto
 
     return PlaceOrderRequest(
         customer_id=customer_id, order_category=order_category,
-        plan_id=random.choice(_PLANS), device_selection=device_selection,
+        plan_id=random.choice(_PLANS), device_selection=device_selection,  # nosec B311 -- fake simulated order data, not crypto
         vas_selections=vas_selections,
     )
 

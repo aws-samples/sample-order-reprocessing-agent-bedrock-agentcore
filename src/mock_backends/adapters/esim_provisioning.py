@@ -21,7 +21,7 @@ _MOCK_DB: dict[str, str] = {}
 
 
 def _generate_activation_code() -> str:
-    suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))  # nosec B311 -- fake mock backend data, not crypto
     return f"LPA:1$rsp.provider.com${suffix}"
 
 

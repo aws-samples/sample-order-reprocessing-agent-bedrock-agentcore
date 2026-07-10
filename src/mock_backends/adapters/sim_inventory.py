@@ -16,7 +16,7 @@ _MOCK_DB: dict[str, str] = {}
 
 
 def _generate_iccid() -> str:
-    return "8991" + "".join(str(random.randint(0, 9)) for _ in range(15))
+    return "8991" + "".join(str(random.randint(0, 9)) for _ in range(15))  # nosec B311 -- fake mock backend data, not crypto
 
 
 def lookup(key: str) -> LookupResponse:

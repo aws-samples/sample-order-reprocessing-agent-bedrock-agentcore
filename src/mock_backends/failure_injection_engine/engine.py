@@ -8,7 +8,6 @@ business-logic-model.md (Failure Injection Algorithm).
 
 from __future__ import annotations
 
-import importlib.resources
 import json
 import random
 from dataclasses import dataclass
@@ -80,7 +79,7 @@ def _select_scenario(subscription: Subscription, config: dict[str, Any]) -> str:
     pools = config["scenario_pools"]
 
     if subscription.subscription_category == SubscriptionCategory.VALUE_ADDED_SERVICE:
-        return random.choice(pools["vas"])
+        return random.choice(pools["vas"])  # nosec B311 -- simulated failure scenario selection, not crypto
 
     if subscription.subscription_type == "Device Purchase/Financing":
         candidates = list(pools["device"])
@@ -88,9 +87,9 @@ def _select_scenario(subscription: Subscription, config: dict[str, Any]) -> str:
             candidates = [c for c in candidates if c != "foldable_esim_quirk"]
         if subscription.financing_type != FinancingType.TRADE_IN_INSTALLMENT:
             candidates = [c for c in candidates if c != "trade_in_valuation_mismatch"]
-        return random.choice(candidates)
+        return random.choice(candidates)  # nosec B311 -- simulated failure scenario selection, not crypto
 
-    return random.choice(pools["core_telco"])
+    return random.choice(pools["core_telco"])  # nosec B311 -- simulated failure scenario selection, not crypto
 
 
 def determine_outcome(
@@ -125,7 +124,7 @@ def determine_outcome(
 
     for subscription in order.subscriptions:
         weight = _compute_failure_weight(order, subscription, config)
-        roll = random.random()
+        roll = random.random()  # nosec B311 -- simulated failure probability roll, not crypto
         if roll < weight:
             scenario = _select_scenario(subscription, config)
             is_non_fetchable = scenario in config["non_fetchable_scenarios"]

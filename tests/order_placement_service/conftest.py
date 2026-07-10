@@ -13,9 +13,9 @@ from moto import mock_aws
 @pytest.fixture
 def aws_credentials():
     os.environ["AWS_ACCESS_KEY_ID"] = "testing"
-    os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
-    os.environ["AWS_SECURITY_TOKEN"] = "testing"
-    os.environ["AWS_SESSION_TOKEN"] = "testing"
+    os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"  # nosec B105 -- moto fake credential fixture, not a real secret
+    os.environ["AWS_SECURITY_TOKEN"] = "testing"  # nosec B105 -- moto fake credential fixture, not a real secret
+    os.environ["AWS_SESSION_TOKEN"] = "testing"  # nosec B105 -- moto fake credential fixture, not a real secret
     os.environ["AWS_REGION"] = "eu-west-2"
 
 

@@ -38,7 +38,7 @@ def provision(request: dict[str, Any]) -> ProvisionResponse:
 
     # Fail on first attempt (simulating entitlement provisioning failure),
     # succeed on retry — matches "auto-resolved via partner API retry" (FR test scenario 6).
-    if retry_attempt == 0 and random.random() < _ENTITLEMENT_FAILURE_RATE:
+    if retry_attempt == 0 and random.random() < _ENTITLEMENT_FAILURE_RATE:  # nosec B311 -- simulated transient failure, not crypto
         return structured_error(
             "ENTITLEMENT_FAILURE",
             "Netflix entitlement not yet provisioned — retry required",

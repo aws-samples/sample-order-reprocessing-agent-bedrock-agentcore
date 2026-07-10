@@ -13,7 +13,7 @@
 # directory's own files (agent_config, gateway_client, sigv4_auth), not the
 # project's full src/ package tree.
 
-FROM public.ecr.aws/docker/library/python:3.13-slim
+FROM public.ecr.aws/docker/library/python:3.13-slim@sha256:eb43ff125d8d58d7449dcba7d336c23bcac412f526d861db493b9994d8010280
 
 WORKDIR /app
 
@@ -22,6 +22,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY agent_config.py sigv4_auth.py gateway_client.py agent.py ./
 
+# Run as a non-root user (Checkov CKV_DOCKER_3) rather than the image default root.
+RUN useradd --create-home --shell /usr/sbin/nologin appuser && chown -R appuser:appuser /app
+USER appuser
+
 EXPOSE 8080
+
+# Checkov CKV_DOCKER_2: basic liveness check against the Flask app's own port.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/ping', timeout=3)" || exit 1
 
 CMD ["python3", "agent.py"]
