@@ -1,4 +1,4 @@
-# Autonomous Order Reprocessing for Telco BSS
+# Autonomous Order Processing Failure Detection and Correction for BSS Telco
 
 Autonomous order failure detection and correction for telco Business Support Systems, powered by Amazon Bedrock AgentCore + Claude Sonnet 4.6.
 
