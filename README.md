@@ -258,4 +258,4 @@ See [`docs/deployment-guide.md`](docs/deployment-guide.md) for full prerequisite
 
 ## Authors
 
-Ali Ahmed (aliashk)
+Ali Ahmed Shaikh, Ankur Sinha
