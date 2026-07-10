@@ -1,0 +1,48 @@
+{
+  "_comment": "Failure Probability Configuration — Realistic Mode. Per domain-entities.md (FailureProbabilityConfig) and business-rules.md (BR-6). Tunable without redeploying code (Q3: B) — e.g. workshop facilitators can adjust pacing by editing this file and redeploying only the Lambda package. Uses JSON (not YAML) specifically so no third-party pyyaml dependency is needed at Lambda runtime — Code.from_asset() does not pip-install dependencies, and json is a Python stdlib module (real bug found during first live deployment: pyyaml ImportError at runtime, since it was never actually bundled into the Lambda zip).",
+
+  "base_failure_rate": 0.35,
+
+  "weights": {
+    "device_category": {
+      "Foldable": 1.5,
+      "Flagship": 1.1,
+      "Standard": 1.0
+    },
+    "vas_type": {
+      "Disney+": 1.4,
+      "Netflix": 1.0,
+      "Spotify": 1.0
+    },
+    "order_category": {
+      "Upgrade": 1.3,
+      "New Connection": 1.0,
+      "Add Subscription": 0.8
+    }
+  },
+
+  "scenario_pools": {
+    "core_telco": [
+      "missing_activation_code",
+      "missing_plan_id",
+      "missing_iccid",
+      "missing_msisdn"
+    ],
+    "device": [
+      "imei_validation_failure",
+      "stock_backorder",
+      "foldable_esim_quirk",
+      "trade_in_valuation_mismatch"
+    ],
+    "vas": [
+      "entitlement_failure",
+      "region_lock",
+      "billing_profile_missing"
+    ]
+  },
+
+  "non_fetchable_scenarios": [
+    "region_lock",
+    "trade_in_valuation_mismatch"
+  ]
+}
