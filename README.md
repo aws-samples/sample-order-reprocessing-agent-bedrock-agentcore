@@ -54,34 +54,9 @@ A Bedrock Guardrail, scoped specifically to `ReprocessOrder` — the one tool th
 
 ## Architecture
 
-```
-Operator UI (local Streamlit)
-      │
-      ▼
-Order Placement Lambda ──creates──▶ CRMOrders / CRMOrderSubscriptions (DynamoDB)
-      │
-      │ fires (on failure)
-      ▼
-EventBridge (OrderStatusChanged) ──▶ Runtime Invoker Lambda ──▶ AgentCore Runtime
-                                                                       │
-                                                    (Claude Sonnet 4.6 reasons here)
-                                                                       │
-                                                                       ▼
-                                                          AgentCore Gateway (MCP)
-                                                                       │
-                        ┌──────────────┬──────────────┬───────────────┼──────────────┬─────────────────┐
-                        ▼              ▼              ▼               ▼              ▼                 ▼
-                GetOrderDetails  ValidateOrder  CheckVASEligibility  FetchMissingData  ReprocessOrder  EscalateToHuman
-                        │              │              │               │              │                 │
-                        └──────────────┴──────────────┴───────┬───────┴──────────────┴─────────────────┘
-                                                               ▼
-                                          Mock Backend Adapters (12 Lambdas: CRM, eSIM,
-                                          SIM/Device/IMEI registries, Netflix/Spotify/Disney+,
-                                          Billing Profile, GVPM, Ticketing)
-                                                               │
-                                                               ▼
-                                          OrderProcessingHistory (DynamoDB — the full audit trail)
-```
+![Order Reprocessing Agent — End-to-End Architecture](docs/images/architecture.png)
+
+EventBridge detects the order failure and invokes the AgentCore Runtime, which reasons with Claude Sonnet 4.6 and calls its 6 tools through the AgentCore Gateway (MCP). Tools read/write order state and fetch missing data from backend systems; when the agent can't safely proceed, it escalates via SNS to the ops team and a ticketing system, with every step recorded for audit.
 
 ### End-to-End Sequence
 
@@ -116,48 +91,6 @@ sequenceDiagram
     AR->>HIST: Write full audit trail
     UI->>DDB: Poll for status
     UI->>HIST: Read reasoning + trail
-```
-
-### Multi-Agent / Tool Architecture
-
-```mermaid
-graph TB
-    subgraph Detection["Detection Layer"]
-        OPS[Order Placement Lambda]
-        EB[EventBridge Rule]
-    end
-
-    subgraph Agent["AgentCore Runtime"]
-        AR[Strands Agent<br/>Claude Sonnet 4.6]
-    end
-
-    subgraph Gateway["AgentCore Gateway (MCP)"]
-        T1[GetOrderDetails]
-        T2[ValidateOrder]
-        T3[CheckVASEligibility]
-        T4[FetchMissingData]
-        T5[ReprocessOrder]
-        T6[EscalateToHuman]
-    end
-
-    subgraph Backends["Mock Backend Layer (12 Lambdas)"]
-        B1[eSIM / SIM / Number Portability]
-        B2[Device Inventory / IMEI Registry]
-        B3[Netflix / Spotify / Disney+]
-        B4[Billing Profile / GVPM / Ticketing]
-    end
-
-    subgraph Audit["Audit & Safety"]
-        HIST[OrderProcessingHistory<br/>DynamoDB]
-        GR[Bedrock Guardrail<br/>scoped to ReprocessOrder]
-    end
-
-    OPS -->|failure| EB
-    EB -->|invoke| AR
-    AR --> T1 & T2 & T3 & T4 & T5 & T6
-    T1 & T2 & T4 --> B1 & B2 & B3 & B4
-    T5 -.->|guarded by| GR
-    T1 & T2 & T3 & T4 & T5 & T6 --> HIST
 ```
 
 ## Components
