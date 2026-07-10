@@ -45,6 +45,7 @@ def query_agent_trace(order_id: str, start_time: int, end_time: int) -> list[dic
                 {field["field"]: field["value"] for field in row}
                 for row in result["results"]
             ]
+        # nosemgrep: arbitrary-sleep -- intentional poll interval, not leftover debug code
         time.sleep(_QUERY_POLL_INTERVAL_SECONDS)
         elapsed += _QUERY_POLL_INTERVAL_SECONDS
     return []

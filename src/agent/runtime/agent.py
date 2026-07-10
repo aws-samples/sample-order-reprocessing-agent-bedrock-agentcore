@@ -89,7 +89,13 @@ def invoke(payload: dict[str, Any], context: Any = None) -> dict[str, Any]:
 
 
 def main() -> None:
-    app.run(host="0.0.0.0", port=8080)
+    # nosemgrep: avoid_app_run_with_bad_host
+    # Binding to 0.0.0.0 is required by the AgentCore Runtime contract: the
+    # container is invoked over AgentCore's internal network, not exposed
+    # directly to the internet. AgentCore's own network boundary (not this
+    # container) controls external access. See:
+    # https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-getting-started.html
+    app.run(host="0.0.0.0", port=8080)  # nosec B104
 
 
 if __name__ == "__main__":

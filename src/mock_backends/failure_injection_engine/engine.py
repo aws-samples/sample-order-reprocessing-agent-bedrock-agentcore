@@ -46,7 +46,7 @@ def load_failure_probability_config(config_path: Optional[Path] = None) -> dict[
     if config_path is None:
         config_path = Path(__file__).parent / "failure_probabilities.json"
 
-    with open(config_path, "r") as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         _CONFIG_CACHE = json.load(f)
     return _CONFIG_CACHE
 

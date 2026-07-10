@@ -96,6 +96,7 @@ def poll_for_terminal_status(order_id: str, max_seconds: int = _MAX_POLL_SECONDS
             escalated = [v for v in last_terminal_by_sub.values() if v["event_type"] == "ESCALATED"]
             return escalated[0] if escalated else list(last_terminal_by_sub.values())[-1]
 
+        # nosemgrep: arbitrary-sleep -- intentional poll interval, not leftover debug code
         time.sleep(_POLL_INTERVAL_SECONDS)
         elapsed += _POLL_INTERVAL_SECONDS
 

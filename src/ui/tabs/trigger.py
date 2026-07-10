@@ -121,6 +121,9 @@ def _render_resolution_flow(order_id: str, place_order_result: dict) -> None:
     history = get_history_snapshot(order_id)
     event_types_seen = {e["event_type"] for e in history}
 
+    # nosemgrep: string-concat-in-list -- each description below is one
+    # intentional multi-line string literal split for readability, not
+    # separate list elements accidentally concatenated.
     steps = [
         ("1️⃣ Order Placement Lambda", "ora-order-placement-service",
          "Writes the order as FAILED to DynamoDB, then fires a real "
