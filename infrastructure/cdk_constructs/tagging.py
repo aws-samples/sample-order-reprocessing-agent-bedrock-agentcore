@@ -34,3 +34,11 @@ def apply_standard_tags(
     Tags.of(scope).add("Component", component)
     Tags.of(scope).add("CreatedDate", date.today().isoformat())
     Tags.of(scope).add("ManagedBy", "CDK")
+    # Exempts every resource in this stack from account-level auto-delete/
+    # sandbox-cleanup sweepers (some sweepers key off "auto-delete", others
+    # off "AutoDelete" — both are set to cover either convention). Added
+    # after the 4 mock-backend DynamoDB tables were flagged for deletion by
+    # an account cleanup sweep on 2026-07-16 — every resource in this stack
+    # was missing this tag, not just those 4.
+    Tags.of(scope).add("auto-delete", "no")
+    Tags.of(scope).add("AutoDelete", "no")
