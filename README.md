@@ -191,4 +191,5 @@ See [`docs/deployment-guide.md`](docs/deployment-guide.md) for full prerequisite
 
 ## Authors
 
-Ali Ahmed Shaikh, Ankur Sinha
+Ali Ahmed Shaikh - Technical Account Manager
+Ankur Sinha - Technical Account Manager
