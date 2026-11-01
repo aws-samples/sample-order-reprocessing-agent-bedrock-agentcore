@@ -1,5 +1,5 @@
 bedrock-agentcore==1.17.0
-strands-agents==1.46.0
+strands-agents==1.48.0
 mcp==1.28.1
 httpx>=0.27.0
 boto3>=1.34.0
